@@ -1,0 +1,62 @@
+wyciagniety blok parsera: 206 linii
+/* --- rozbior pakietu SDBGP --- */
+
+=== okno0: pakiet od podstawy bufora (wariant A) ===
+    [pakiet] okno0 pod 0xffffffffc3a69000 magic=0x73354450 self=0x28 rozmiar_pakietu=0x220 src=0x80ff0180 (jadro) dst=0x80ff0201 (MP4/A53) proto=0x20000200 (SDBGP wariant B) numer=7 polecen=3
+    [polecenie] okno0 +0x40 typ=0x01010010 SDBGP_GET_CONF (konfiguracja A53) self=0x18 total=0x18 flagi=0x0 nr=1 pkt=0 arg=- (typ bez argumentow pamieciowych)
+    [polecenie] okno0 +0x58 typ=0x01040021 SDBGP_READ_MEMORY (odczyt pamieci A53) self=0x20 total=0xb0 flagi=0x0 nr=1 pkt=0 arg=6
+      [argument 0] self=0x18 dostep=0x2010001 (typ pamieci 0x20100, dostep 1) adres=0x0 rozmiar=0x1b000
+      [argument 1] self=0x18 dostep=0x2010001 (typ pamieci 0x20100, dostep 1) adres=0x1b000 rozmiar=0xd000
+      [argument 2] self=0x18 dostep=0x2010001 (typ pamieci 0x20100, dostep 1) adres=0x62000 rozmiar=0x3000
+      [argument 3] self=0x18 dostep=0x2010001 (typ pamieci 0x20100, dostep 1) adres=0x68000 rozmiar=0x1000
+      [argument 4] self=0x18 dostep=0x2010001 (typ pamieci 0x20100, dostep 1) adres=0x85000 rozmiar=0x31000
+      [argument 5] self=0x18 dostep=0x2010001 (typ pamieci 0x20100, dostep 1) adres=0xb6000 rozmiar=0xa000
+    [polecenie] okno0 +0x108 typ=0x01050020 SDBGP_0x01050020 (polecenie z lista identyfikatorow regionow) self=0x28 total=0x150 flagi=0x0 nr=2 pkt=0 arg=- (typ bez argumentow pamieciowych)
+  liczba rozpoznanych polecen w oknie0                       3              3              OK
+  liczba argumentow pamieciowych w oknie0                    6              6              OK
+  polecen READ w oknie0                                      1              1              OK
+
+=== okno1: pakiet doklejany pod offsetem 0x220 (wariant B) ===
+    [pakiet] okno1 pod 0xffffffffc3a69220 magic=0x73354450 self=0x28 rozmiar_pakietu=0x28 src=0x80ff0180 (jadro) dst=0x80ff0201 (MP4/A53) proto=0x20000201 (SDBGP) numer=8 polecen=2
+    [polecenie] okno1 +0x40 typ=0x01040021 SDBGP_READ_MEMORY (odczyt pamieci A53) self=0x20 total=0x68 flagi=0x0 nr=1 pkt=0 arg=3
+      [argument 0] self=0x18 dostep=0x2010001 (typ pamieci 0x20100, dostep 1) adres=0x28000 rozmiar=0x3a000
+      [argument 1] self=0x18 dostep=0x2010001 (typ pamieci 0x20100, dostep 1) adres=0x65000 rozmiar=0x3000
+      [argument 2] self=0x18 dostep=0x2010001 (typ pamieci 0x20100, dostep 1) adres=0x69000 rozmiar=0x1c000
+    [polecenie] okno1 +0xa8 typ=0x01050020 SDBGP_0x01050020 (polecenie z lista identyfikatorow regionow) self=0x28 total=0x60 flagi=0x0 nr=1 pkt=0 arg=- (typ bez argumentow pamieciowych)
+  liczba rozpoznanych polecen w oknie1                       2              2              OK
+  pierwszy adres odczytu z okna1                             163840         163840         OK
+  pierwszy rozmiar odczytu z okna1                           237568         237568         OK
+  liczba argumentow w oknie1 (arg=3)                         3              3              OK
+  ostatni adres odczytu z okna1                              430080         430080         OK
+  ostatni rozmiar odczytu z okna1                            114688         114688         OK
+  liczba argumentow pamieciowych razem (6 z okna0 + 3 z okna1) 9              9              OK
+
+=== typ spoza tabeli: musi byc NIEZNANE z surowa wartoscia ===
+    [pakiet] nieznany pod 0xffffffffc3a69220 magic=0x73354450 self=0x28 rozmiar_pakietu=0x28 src=0x80ff0180 (jadro) dst=0x80ff0201 (MP4/A53) proto=0x20000201 (SDBGP) numer=8 polecen=2
+    [polecenie] nieznany +0x40 typ=0x01050555 NIEZNANE (typ spoza tabeli, surowa wartosc w linii) self=0x20 total=0x68 flagi=0x0 nr=1 pkt=0 arg=- (typ bez argumentow pamieciowych)
+      [!] typ NIEZNANE, surowa wartosc 0x01050555
+    [polecenie] nieznany +0xa8 typ=0x01050020 SDBGP_0x01050020 (polecenie z lista identyfikatorow regionow) self=0x28 total=0x60 flagi=0x0 nr=1 pkt=0 arg=- (typ bez argumentow pamieciowych)
+  polecenie rozpoznane jako rodzina SDBGP                    1              1              OK
+  w raporcie slowo NIEZNANE                                  1              1              OK
+  w raporcie surowa wartosc 0x01050555                       1              1              OK
+
+=== brak magic: parser nie moze udawac pakietu ===
+    [pakiet] smieci pod 0xffffffffc3a69000: brak magic 0x73354450 (jest 0xaaaaaaaa) - to nie pakiet DECI5S
+  brak rozpoznanych polecen                                  1              1              OK
+  w raporcie brak magic                                      1              1              OK
+
+=== podsumowanie testu ===
+  polecen rozpoznanych lacznie: 7, argumentow: 9
+  typy widziane: SDBGP_GET_CONF(0x01010010)=1 SDBGP_READ_MEMORY(0x01040021)=2 SDBGP_0x01050020(0x01050020)=3 NIEZNANE(0x01050555)=1 
+  pary adres/rozmiar:
+    adres 0x0 rozmiar 0x1b000  1 x
+    adres 0x1b000 rozmiar 0xd000  1 x
+    adres 0x62000 rozmiar 0x3000  1 x
+    adres 0x68000 rozmiar 0x1000  1 x
+    adres 0x85000 rozmiar 0x31000  1 x
+    adres 0xb6000 rozmiar 0xa000  1 x
+    adres 0x28000 rozmiar 0x3a000  1 x
+    adres 0x65000 rozmiar 0x3000  1 x
+    adres 0x69000 rozmiar 0x1c000  1 x
+
+TEST OK (0 bledow)

@@ -1,0 +1,20 @@
+writeprobe start: matryca 48 prob zapisu do pamieci A53
+wersja systemu 0x13600007, budzet 600 s, stop plikiem /data/writeprobe.stop
+wymagania: odczyt i zapis pamieci jadra (kstuff); latka PPR nie jest potrzebna
+log: /data/writeprobe.txt
+kontekst 0xfffff4b00183d000, BAR2 0xfffff4b0e0400000
+IOCTL_START: 0
+IOCTL_ALTER_STATE: 0, stan 0xfffe000f
+skrzynka gotowa: stan 0xfffff4b00183d4ec, flagi 0xfffff4b00183d4f4, bufor 0xffffff8062000000, iommu 0x70000000, rozmiar 0x200000
+kotwice obrazu A53 (na poczatku):
+  kotwica: transport nie potwierdzil ukonczenia, kod -2, 3175 ms
+  0x028000 naglowek obrazu : odczyt nieudany
+  kotwica: transport nie potwierdzil ukonczenia, kod -2, 3177 ms
+  0x057aa8 helper          : odczyt nieudany
+  kotwica: transport nie potwierdzil ukonczenia, kod -2, 3176 ms
+  0x05b964 dispatch_native : odczyt nieudany
+  kotwica: transport nie potwierdzil ukonczenia, kod -2, 3179 ms
+  0x05bc20 plaintext_direct: odczyt nieudany
+  kotwica: transport nie potwierdzil ukonczenia, kod -2, 3182 ms
+  0x05c7e8 common_return   : odczyt nieudany
+kotwice na poczatku: 0 z 5 zgodnych

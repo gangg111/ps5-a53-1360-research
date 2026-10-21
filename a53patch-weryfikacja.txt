@@ -1,0 +1,121 @@
+=== weryfikacja statyczna a53patch.elf ===
+== artefakt ==
+  plik: a53patch.elf, 222328 B
+  sha256: 026efe0c5b6f49f7bcf7b6b18dc124c73eb81c361ac4fc61d51070711991f63e
+  OK   naglowek ELF obecny
+  OK   ELF64  klasa=2
+  OK   little endian  dane=1
+  OK   ELF typu exec/dyn (SDK daje ET_DYN)  typ=3
+  OK   jest co najmniej jeden segment PT_LOAD  phnum=4
+  OK   x86-64  maszyna=62
+  OK   entry != 0  0x5ec0
+  OK   sa segmenty  phnum=4
+
+== tabela z naglowka ==
+  miejsc latki: 5, kotwic: 5, jaskin: 2, prolog celu: 24 B
+  OK   piec miejsc latki (2 call + 2 aes_site + sha_auth)
+  OK   piec kotwic tozsamosci
+  OK   dwie jaskinie
+  OK   prolog celu ma 24 bajty
+
+== zgodnosc tabeli z obrazem i zrzutem (przeliczenie niezalezne) ==
+  OK   call[0]: slowo stock w obrazie  rel 0x22120 obraz 0x94004611 stock 0x94004611
+  OK   call[0]: miejsce w mapowanym segmencie io
+  OK   call[1]: slowo stock w obrazie  rel 0x23860 obraz 0x94004041 stock 0x94004041
+  OK   call[1]: miejsce w mapowanym segmencie io
+  OK   aes_site[0]: slowo stock w obrazie  rel 0x2FC14 obraz 0x97FF4D44 stock 0x97FF4D44
+  OK   aes_site[0]: miejsce w mapowanym segmencie io
+  OK   aes_site[1]: slowo stock w obrazie  rel 0x2FD4C obraz 0x97FF4CF6 stock 0x97FF4CF6
+  OK   aes_site[1]: miejsce w mapowanym segmencie io
+  OK   sha_auth_site: slowo stock w obrazie  rel 0x33C00 obraz 0x97FFF3B3 stock 0x97FFF3B3
+  OK   sha_auth_site: miejsce w mapowanym segmencie io
+  OK   naglowek io: kotwica zgodna z obrazem  rel 0x00000
+  OK   helper: kotwica zgodna z obrazem  rel 0x33964
+  OK   dispatch_native: kotwica zgodna z obrazem  rel 0x2FAA8
+  OK   plaintext_direct: kotwica zgodna z obrazem  rel 0x347E8
+  OK   common_return: kotwica zgodna z obrazem  rel 0x33C20
+  OK   jaskinia runtime: liczba slow zgodna z deklaracja  19 slow
+  OK   jaskinia plaintext: liczba slow zgodna z deklaracja  40 slow
+  OK   runtime_cave zaczyna sie w paddingu za danymi pliku  rel 0x39F00
+  OK   plaintext_cave zaczyna sie w paddingu za danymi pliku  rel 0x39F50
+  OK   plaintext_cave konczy sie w mapowanym oknie  koniec rel 0x39FF0
+  OK   prolog celu zgodny ze zrzutem jadra  offset 0xC1FEF0
+  OK   offset celu jest stala 32-bitowa w ELF  0xC1FEF0
+
+== brak nakladania sie zakresow ==
+  OK   zadne dwa zakresy sie nie nakladaja
+
+== tabela w binarium ==
+  OK   slowo po latce jest w ELF (call[0])  0x94005F78
+  OK   slowo stock jest w ELF (call[0], bramka)  0x94004611
+  OK   slowo po latce jest w ELF (call[1])  0x940059A8
+  OK   slowo stock jest w ELF (call[1], bramka)  0x94004041
+  OK   slowo po latce jest w ELF (aes_site[0])  0x940028C6
+  OK   slowo stock jest w ELF (aes_site[0], bramka)  0x97FF4D44
+  OK   slowo po latce jest w ELF (aes_site[1])  0x94002878
+  OK   slowo stock jest w ELF (aes_site[1], bramka)  0x97FF4CF6
+  OK   slowo po latce jest w ELF (sha_auth_site)  0x940018D4
+  OK   slowo stock jest w ELF (sha_auth_site, bramka)  0x97FFF3B3
+  OK   24-bajtowy prolog celu jest w ELF (bramka prologu)
+  OK   kotwica 0 jest w ELF  rel 0x00000
+  OK   kotwica 1 jest w ELF  rel 0x33964
+  OK   kotwica 2 jest w ELF  rel 0x2FAA8
+  OK   kotwica 3 jest w ELF  rel 0x347E8
+  OK   kotwica 4 jest w ELF  rel 0x33C20
+  OK   nazwa payloadu jest w ELF
+
+WERYFIKACJA OK: 0 bledow
+
+=== test logiki latki na komputerze (make -C tools/a53patch test) ===
+== test 1: obraz prawdziwy, pierwsza latka ==
+       | [bramka] 5 kotwic tozsamosci obrazu zgodnych
+       | [bramka] miejsca latki: 5 stock, 0 po latce, 0 obcych
+       | [jaskinia] runtime_cave rel 0x39F00: zapisano 19 slow (76 B)
+       | [jaskinia] plaintext_cave rel 0x39F50: zapisano 40 slow (160 B)
+       | [zmiana] call[0] rel 0x22120 przed=0x94004611 po=0x94005F78
+       | [zmiana] call[1] rel 0x23860 przed=0x94004041 po=0x940059A8
+       | [zmiana] aes_site[0] rel 0x2FC14 przed=0x97FF4D44 po=0x940028C6
+       | [zmiana] aes_site[1] rel 0x2FD4C przed=0x97FF4CF6 po=0x94002878
+       | [zmiana] sha_auth_site rel 0x33C00 przed=0x97FFF3B3 po=0x940018D4
+       | [weryfikacja] 5 miejsc i 2 jaskin zgodnych po zapisie
+  OK   wynik A53P_OK
+  OK   zmienily sie wylacznie dozwolone zakresy
+       | zmienionych bajtow: 251, zapisow: 7, slow policzonych: 64
+  OK   miejsce latki ma slowo docelowe
+  OK   miejsce latki ma slowo docelowe
+  OK   miejsce latki ma slowo docelowe
+  OK   miejsce latki ma slowo docelowe
+  OK   miejsce latki ma slowo docelowe
+  OK   jaskinia ma tresc docelowa
+  OK   jaskinia ma tresc docelowa
+== test 2: powtorna latka (idempotencja) ==
+       | [bramka] 5 kotwic tozsamosci obrazu zgodnych
+       | [bramka] miejsca latki: 0 stock, 5 po latce, 0 obcych
+       | [stan] obraz juz po latce, nie zapisuje nic
+  OK   wynik A53P_JUZ
+  OK   zero zapisow przy powtorce
+  OK   bufor bez zmian
+== test 3: bufor za maly ==
+       | [odmowa] bufor 0x10000000 ma 0x39FFC B, segment io wymaga 0x3A000 B
+  OK   wynik A53P_ODMOWA_ROZM
+  OK   zero zapisow
+== test 4: zepsuta kotwica ==
+       | [bramka] kotwica helper rel 0x33964 NIE zgadza sie: jest ff4303d1, ma byc ff4303d1
+  OK   wynik A53P_ODMOWA_KOTWICA
+  OK   zero zapisow
+== test 5: zepsute slowo miejsca latki ==
+       | [bramka] 5 kotwic tozsamosci obrazu zgodnych
+       | [bramka] aes_site[0] rel 0x2FC14: jest 0x940028C7, oczekiwane stock 0x97FF4D44 albo po latce 0x940028C6
+       | [bramka] miejsca latki: 0 stock, 4 po latce, 1 obcych
+       | [odmowa] mieszany albo obcy stan miejsc latki, nie zapisuje nic
+  OK   wynik A53P_ODMOWA_STOCK
+  OK   zero zapisow, takze w jaskiniach
+== test 6: czysty obraz bez zmian po odmowie ==
+       | [bramka] 5 kotwic tozsamosci obrazu zgodnych
+       | [bramka] call[0] rel 0x22120: jest 0x94004691, oczekiwane stock 0x94004611 albo po latce 0x94005F78
+       | [bramka] miejsca latki: 4 stock, 0 po latce, 1 obcych
+       | [odmowa] mieszany albo obcy stan miejsc latki, nie zapisuje nic
+  OK   wynik A53P_ODMOWA_STOCK
+  OK   zero zapisow
+
+TEST OK (0 bledow)
